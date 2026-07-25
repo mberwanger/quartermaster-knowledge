@@ -23,8 +23,12 @@ jobs:
         with:
           go-version: stable
 
+      # setup-go puts the toolchain on PATH but not GOPATH/bin, which is where
+      # go install writes.
       - name: Install Quartermaster
-        run: go install github.com/mberwanger/quartermaster@${{ env.QM_VERSION }}
+        run: |
+          go install github.com/mberwanger/quartermaster@${{ env.QM_VERSION }}
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       # The same checks the pull request ran. A tag is not a reason to trust a
       # tree that was never validated: tags get moved, and branches get pushed to
