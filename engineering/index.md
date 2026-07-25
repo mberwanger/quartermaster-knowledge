@@ -1,4 +1,9 @@
 <!-- BEGIN GENERATED -->
+# Directories
+
+* [agents/](/engineering/agents/) - 1 document
+* [skills/](/engineering/skills/) - 1 document
+
 # Concepts
 
 * [Commit messages say why](/engineering/commit-messages.md) - A commit message explains why the change was made, because the diff already shows what changed. The subject is a sentence, the body is the reasoning, and the rejected alternative belongs there too.
