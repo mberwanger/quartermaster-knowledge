@@ -1,5 +1,5 @@
 ---
-id: skills.write-a-record
+id: skills.growth.write-a-record
 title: Write a record
 description: Capture a decision as a record that survives being read in a year, including the option that was rejected. Use when a choice has been made that somebody will otherwise relitigate.
 type: skill

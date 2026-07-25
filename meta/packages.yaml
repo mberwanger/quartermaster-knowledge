@@ -1,0 +1,52 @@
+# Packages are named selections. A repository asks for one by name and gets the
+# rules, skills, and agents that belong together, so a team's set is maintained
+# here rather than as an id list in every repository that wants it.
+#
+# Selections are patterns, and a plain id is a pattern with no wildcard.
+# skills.data.* takes a team's whole set without naming its members, which means
+# adding a skill to a team is a change in this file and nowhere else.
+#
+# Knowledge is not selectable and does not appear here. Every document in the
+# bundle is readable on disk whatever a repository selects; a package decides
+# only what arrives without being asked for.
+
+# What everyone takes. One resident rule, and the skills any engineer might want.
+engineering:
+  rules:
+    - engineering.commit-messages
+  skills:
+    - skills.engineering.*
+
+# A Go service. The import convention declares scope ["**/*.go"], so it costs
+# nothing until a Go file is open.
+go-service:
+  rules:
+    - engineering.commit-messages
+    - engineering.go-imports
+  skills:
+    - skills.engineering.*
+  agents:
+    - agents.doc-reviewer
+
+# Data engineering: everything an engineer gets, plus their own skills. The
+# shared skills are named by the same pattern rather than copied, so a new one
+# reaches both packages at once.
+data-engineering:
+  rules:
+    - engineering.commit-messages
+    - engineering.go-imports
+  skills:
+    - skills.engineering.*
+    - skills.data.*
+
+# Growth writes more than it compiles, so it takes the markdown convention and
+# its own skills instead of the Go one.
+growth:
+  rules:
+    - engineering.commit-messages
+    - growth.markdown
+  skills:
+    - skills.engineering.*
+    - skills.growth.*
+  agents:
+    - agents.doc-reviewer
