@@ -25,11 +25,13 @@ jobs:
         with:
           go-version: stable
 
-      # setup-go puts the toolchain on PATH but not GOPATH/bin, which is where
-      # go install writes.
+      # Two things setup-go does not do for us. GOPATH/bin is not on PATH, and
+      # go install names the binary after the module path, so it arrives as
+      # quartermaster rather than qm. The release archives ship it as qm.
       - name: Install Quartermaster
         run: |
           go install github.com/mberwanger/quartermaster@${{ env.QM_VERSION }}
+          mv "$(go env GOPATH)/bin/quartermaster" "$(go env GOPATH)/bin/qm"
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Validate frontmatter, ids, and supersede links
