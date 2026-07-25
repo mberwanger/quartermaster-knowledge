@@ -12,7 +12,7 @@ env:
   # Pin the tool. A store is only as reproducible as the thing that compiles it,
   # and "latest" means a build that passed yesterday can fail today for reasons
   # that have nothing to do with this repository.
-  QM_VERSION: latest
+  QM_VERSION: v0.1.0
 
 jobs:
   validate:
