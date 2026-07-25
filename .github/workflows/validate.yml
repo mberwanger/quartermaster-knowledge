@@ -1,0 +1,42 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+env:
+  # Pin the tool. A store is only as reproducible as the thing that compiles it,
+  # and "latest" means a build that passed yesterday can fail today for reasons
+  # that have nothing to do with this repository.
+  QM_VERSION: latest
+
+jobs:
+  validate:
+    name: validate the store
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+
+      - name: Install Quartermaster
+        run: go install github.com/mberwanger/quartermaster@${{ env.QM_VERSION }}
+
+      - name: Validate frontmatter, ids, and supersede links
+        run: qm bundle validate --root .
+
+      - name: Check the generated listings are current
+        run: qm bundle index --root . --check
+
+      # Build last: it catches what validation cannot. An inline link pointing at
+      # a document that does not exist, a ruleset naming a document that does not
+      # qualify, and an agent declaring a permission mode a bundle may not carry
+      # are all build-time failures.
+      - name: Build the bundle
+        run: qm bundle build --root . --out dist --repo ${{ github.repository }} --commit ${{ github.sha }}

@@ -1,0 +1,26 @@
+name: quartermaster-knowledge
+schema: meta/frontmatter.schema.json
+rulesets: meta/rulesets.yaml
+
+# The store is the repository root, so what counts as a document is named by
+# directory rather than swept up with **/*.md. A repository root holds files
+# about the repository itself, and README.md is not knowledge.
+#
+# include decides what is a document at all, which is what gets validated.
+# exclude decides what travels in the bundle. They are not the same question.
+include:
+  - "engineering/**/*.md"
+  - "writing/**/*.md"
+  - "records/**/*.md"
+
+# What a document must be before a ruleset may turn it into a rule. A draft is
+# still distributed and still readable; it just never loads on its own.
+requires:
+  status: [active]
+  provenance: [verified, decided]
+  visibility: { not: [restricted] }
+
+# What counts as a skill: a directory whose skill.md declares type skill. The
+# files beside it travel as assets and need no frontmatter of their own.
+skills:
+  type: [skill]

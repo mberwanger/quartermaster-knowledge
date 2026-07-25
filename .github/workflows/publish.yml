@@ -1,0 +1,63 @@
+name: publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  QM_VERSION: latest
+  REGISTRY: ghcr.io
+
+jobs:
+  publish:
+    name: publish the bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+
+      - name: Install Quartermaster
+        run: go install github.com/mberwanger/quartermaster@${{ env.QM_VERSION }}
+
+      # The same checks the pull request ran. A tag is not a reason to trust a
+      # tree that was never validated: tags get moved, and branches get pushed to
+      # after review.
+      - name: Validate
+        run: qm bundle validate --root .
+
+      - name: Check listings
+        run: qm bundle index --root . --check
+
+      - name: Build
+        run: qm bundle build --root . --out dist --repo ${{ github.repository }} --commit ${{ github.sha }}
+
+      # Quartermaster carries no credentials of its own. It reads the Docker
+      # credential store, so logging in here is what authenticates the push.
+      - name: Log in to ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish
+        run: |
+          qm bundle publish \
+            --dir dist \
+            --ref ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.ref_name }} \
+            --tag latest
+
+      - name: Report what was published
+        run: |
+          echo "### Published" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"digest  \(.digest)\ndocs    \(.docs)\nrulesets \(.rulesets)"' dist/meta.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
