@@ -1,9 +1,25 @@
-# Named selections of documents to push into an agent's context. Each is a list
-# of ids and holds no prose. Push sparingly: a document an agent would know to
-# look for belongs in a skill instead.
+# Named selections of documents to push into an agent's context. A ruleset holds
+# ids and no prose: the documents live in the store either way, and selecting one
+# only decides what an agent is given without asking for it.
 #
-# Add one once a document is worth pushing, for example:
-#
-# house-style:
-#   docs:
-#     - id: your.document.id
+# Push sparingly. Anything an agent would know to look for belongs in a skill or
+# on disk, and a resident rule is paid for in every session of every repository
+# that selects it.
+
+# What every repository takes. One document, no scope, so it loads every session.
+baseline:
+  docs:
+    - id: engineering.commit-messages
+
+# A Go service. The import convention declares its own scope of **/*.go, so it
+# costs nothing until a Go file is open.
+go-service:
+  docs:
+    - id: engineering.commit-messages
+    - id: engineering.go-imports
+
+# A repository whose main output is documentation. Scoped to markdown.
+authoring:
+  docs:
+    - id: engineering.commit-messages
+    - id: writing.markdown
