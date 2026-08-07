@@ -1,109 +1,140 @@
 # quartermaster-knowledge
 
 A worked example of a [Quartermaster](https://github.com/mberwanger/quartermaster)
-knowledge store. It exists to be pulled into a real repository so you can see
-what arrives, where it lands, and what changes when you select something
-different.
+bundle source. Pull it into a repository to see what arrives, where it lands,
+and how selecting a different package changes the capabilities and rules that
+Quartermaster materializes.
 
-The content is deliberately ordinary — commit messages, import grouping, how to
-read a diff. The point is not the advice. The point is watching one bundle
-produce different results in two repositories because they asked for different
-things.
+The content is deliberately ordinary: commit messages, import grouping, and how
+to read a diff. The example shows how one bundle can serve repositories with
+different profiles without duplicating its source documents.
 
-## What is in here
+## Terms
 
-The repository root *is* the store. There is no `store/` directory, because
-there is nothing else in this repository to keep separate from.
+**Bundle source** is the repository content Quartermaster validates and builds.
+This repository root is the bundle source.
 
-```
-bundle.yaml          what is a document, what travels, what may become a rule
+**Knowledge** is retrievable content written to disk for an agent to read when
+needed. It is not loaded automatically.
+
+**Rule** is a knowledge document a selected package pushes into an agent's
+instructions. There is no rule document type; the same document can be a rule in
+one repository and retrievable knowledge in another.
+
+**Skill** and **Agent** are capabilities. A skill loads instructions on demand;
+an agent delegates work with its declared tools and permissions.
+
+**Package** is a named profile of rules, skills, and agents. Packages contain
+selections, not prose, and are the stable names consumer repositories choose.
+
+**Bundle** is the built, content-addressed artifact distributed from a bundle
+source.
+
+## Metadata profile
+
+Knowledge metadata follows [Open Knowledge Format
+v0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md).
+The standard owns source provenance (`sources`), authorship (`generated`),
+independent confirmation (`verified`), lifecycle (`status`), and freshness
+(`stale_after`). Documents without `verified` are valid but explicitly
+unverified; this source does not invent verification actors or timestamps
+during migration.
+
+Quartermaster adds only metadata required for distribution:
+
+- `id` gives packages and generated files a stable identity.
+- `domain` supports optional knowledge filtering.
+- `scope` controls path-scoped rules.
+- `visibility` prevents restricted documents from entering an artifact.
+- `skill` and `agent` describe capabilities a package can install.
+- `supersedes` and `superseded_by` retain machine-readable replacement links.
+
+This source requires explicit `id`, `title`, `description`, `type`, and `status`
+even though OKF itself requires only `type`. Explicit lifecycle is necessary
+because only `stable` documents may become rules.
+
+## Source layout
+
+```text
+bundle.yaml                  document boundaries and rule eligibility
 meta/
-  frontmatter.schema.json   the schema this store holds itself to
-  rulesets.yaml             named selections of documents
-engineering/         conventions, skills, and agents
-writing/             documentation conventions
-records/             decisions, written once and superseded rather than edited
+  frontmatter.schema.json   document metadata schema
+  packages.yaml             named package profiles
+knowledge/
+  <domain>/                 ordinary retrievable knowledge
+capabilities/
+  skills/<domain>/<skill>/  skill documents and their assets
+  agents/                   agent documents
 ```
+
+Document IDs are stable identities and do not depend on these paths.
 
 ## Using it
 
 ```bash
 qm init --source oci://ghcr.io/mberwanger/quartermaster-knowledge:latest \
-        --ruleset go-service
+        --package go-service
 ```
 
-That writes `.quartermaster.yaml`, materializes the rules your harness expects,
-puts the knowledge tree on disk, and installs the hooks that keep it current.
-`qm status` shows what you got and what it costs.
+That writes `.quartermaster.yaml`, materializes the selected package's rules and
+capabilities, puts the knowledge tree on disk, and installs hooks that keep it
+current. `qm status` shows what resolved and what is always loaded.
 
-Pick a different ruleset and you get a different repository:
-
-| Ruleset | For |
-|---|---|
-| `baseline` | Everything. One resident rule |
-| `go-service` | A Go service. Adds an import convention scoped to `**/*.go` |
-| `authoring` | A docs repository. Adds a writing convention scoped to `**/*.md` |
-
-Skills and agents are opted into by name rather than by ruleset, because a skill
-costs context in every session and an agent grants a capability:
+The generated manifest uses `use` to select package profiles:
 
 ```yaml
 bundles:
   - source: oci://ghcr.io/mberwanger/quartermaster-knowledge:latest
-    rulesets: [go-service]
-    skills: [skills.review-a-diff]
-    agents: [agents.doc-reviewer]
+    use: [go-service]
 ```
 
-## The four ways a document reaches an agent
+The available packages are `engineering`, `go-service`, `data-engineering`, and
+`growth`. Their current memberships are defined in `meta/packages.yaml`.
 
-This is the thing worth understanding, and the store is arranged to show it.
+## How content reaches an agent
 
-**A rule** is pushed. It is in your context whether you asked or not, so it is
-paid for in every session. A document becomes one by being named in a ruleset —
-there is no rule type, and the same document can be a rule in one repository and
-merely readable in another.
+**A resident rule** is pushed into every session, so it always consumes context.
+A document becomes one when a selected package names it without a path scope.
 
-**A scoped rule** is pushed only when it is relevant. `engineering.go-imports`
-declares `scope: ["**/*.go"]`, so it costs nothing until a Go file is open.
+**A scoped rule** is pushed only when relevant. `engineering.go-imports`
+declares `scope: ["**/*.go"]`, so it loads when a Go file is in scope.
 
-**A skill** is loaded on demand. Its description is resident so an agent knows it
-exists; the body is read when the work matches. Skills are directories, and the
-files beside `skill.md` travel with them.
+**A skill** is loaded on demand. Its description tells the agent when the
+capability applies; the body and files beside `skill.md` load together.
 
-**Knowledge** is on disk and read when needed. It costs no context at all. Most
-of a store should be this.
+**An agent** is installed as a delegation capability with its declared tools,
+model, and permission mode.
+
+**Knowledge** remains retrievable on disk and consumes no context until read.
+Most documents in a bundle source should be knowledge.
 
 ## What does not travel
 
 A document marked `visibility: restricted` is validated here and never enters a
-bundle — not the catalog, not the tree, not even a directory listing.
+bundle: not the catalog, the knowledge tree, or a directory listing.
 
-That is a **propagation** control, not an access control. Anyone who can read
-this repository can read it, and this repository is public. What it prevents is
-content being copied onto every machine that runs `qm sync`. If something
-genuinely needs protecting, it does not belong in a markdown file in git.
+That is a propagation control, not access control. Anyone who can read this
+public repository can read the source. The setting prevents content from being
+copied onto machines that run `qm sync`; secrets do not belong in markdown in
+git.
 
 ## Contributing
 
-Every change is a pull request, and CI validates frontmatter, unique ids,
-supersede links, and that the listings are current. Run `qm bundle index` and
-commit the result if it changes anything.
+CI validates frontmatter, unique IDs, supersede links, current generated
+indexes, and the built bundle. Run `qm bundle index --root .` after moving or
+adding documents.
 
-A document written by an agent stays `status: draft` until a person merges it.
-Draft documents still travel in the bundle and are still readable; they just
-never become rules.
+Agent-authored documents stay `status: draft` until reviewed. Draft documents
+remain retrievable in the bundle but cannot become rules under this source's
+eligibility gate.
 
 ## Releasing
 
-Tag it. `v*` builds the bundle and pushes it to
-`ghcr.io/mberwanger/quartermaster-knowledge`, tagged with the version and with
-`latest`.
+A `v*` tag builds the bundle and pushes it to
+`ghcr.io/mberwanger/quartermaster-knowledge` with the version and `latest` tags.
 
-The artifact is addressed by content digest, and the digest deliberately excludes
-the commit, so two builds of identical content agree even from different commits.
-Republishing unchanged content does not churn the registry.
+The artifact is addressed by content digest. The digest excludes the commit, so
+builds of identical content agree even when produced from different commits.
 
-**One-time setup:** GHCR packages are private when first pushed. After the first
-publish, make the package public in its settings, or `qm init` will need
-credentials to pull it.
+GHCR packages are private when first pushed. After the first publish, make the
+registry package public or consumers need credentials to pull it.

@@ -9,7 +9,7 @@ permissions:
   packages: write
 
 env:
-  QM_VERSION: v0.2.0
+  QM_VERSION: v0.2.2
   REGISTRY: ghcr.io
 
 jobs:
@@ -65,5 +65,5 @@ jobs:
           echo "### Published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          jq -r '"digest  \(.digest)\ndocs    \(.docs)\nrulesets \(.rulesets)"' dist/meta.json >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"digest   \(.digest)\ndocs     \(.docs)\npackages \(.packages)"' dist/meta.json >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
