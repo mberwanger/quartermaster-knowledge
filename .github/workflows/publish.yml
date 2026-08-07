@@ -9,7 +9,7 @@ permissions:
   packages: write
 
 env:
-  QM_VERSION: v0.2.0
+  QM_VERSION: v0.2.2
   REGISTRY: ghcr.io
 
 jobs:
