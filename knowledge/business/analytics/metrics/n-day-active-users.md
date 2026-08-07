@@ -8,7 +8,7 @@ domain: analytics
 tags: [ga4, audience, active-users, metric, demo]
 sources:
   - id: events
-    resource: /knowledge/data/bigquery/ga4-obfuscated-sample-ecommerce/events.md
+    resource: /knowledge/data/bigquery/ga4/events.md
     title: GA4 events export
   - id: google-query
     resource: https://support.google.com/analytics/answer/9037342

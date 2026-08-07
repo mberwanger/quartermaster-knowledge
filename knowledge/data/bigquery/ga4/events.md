@@ -1,5 +1,5 @@
 ---
-id: bigquery.table.bigquery-public-data.ga4_obfuscated_sample_ecommerce.events
+id: analytics.ga4.events
 title: GA4 events export
 description: Daily sharded GA4 event export tables containing user interactions, event parameters, acquisition context, and ecommerce details.
 type: BigQuery Table

@@ -1,6 +1,6 @@
 <!-- BEGIN GENERATED -->
 # Directories
 
-* [ga4-obfuscated-sample-ecommerce/](/knowledge/data/bigquery/ga4-obfuscated-sample-ecommerce/) - 2 documents
+* [ga4/](/knowledge/data/bigquery/ga4/) - 2 documents
 
 <!-- END GENERATED -->

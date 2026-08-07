@@ -1,5 +1,5 @@
 ---
-id: bigquery.dataset.bigquery-public-data.ga4_obfuscated_sample_ecommerce
+id: analytics.ga4.dataset
 title: GA4 obfuscated sample ecommerce dataset
 description: Public BigQuery export data from an obfuscated Google Analytics 4 ecommerce implementation, suitable for learning event and audience analysis.
 type: BigQuery Dataset
