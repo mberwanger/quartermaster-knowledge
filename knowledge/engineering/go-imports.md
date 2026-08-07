@@ -3,8 +3,7 @@ id: engineering.go-imports
 title: Go imports group in three blocks
 description: Standard library, third party, then our own modules, separated by blank lines and enforced by gci rather than by review. Configured once per repository in .golangci.yml.
 type: concept
-status: active
-provenance: verified
+status: stable
 scope: ["**/*.go"]
 ---
 

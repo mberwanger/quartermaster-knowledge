@@ -3,8 +3,7 @@ id: skills.engineering.review-a-diff
 title: Review a diff
 description: Read a change the way a reviewer would, in a fixed order, and report only what you can point at in the code. Use before opening a pull request, or when asked to review one.
 type: skill
-status: active
-provenance: decided
+status: stable
 skill:
   name: review-a-diff
   allowed-tools: [Read, Grep, Glob, Bash]

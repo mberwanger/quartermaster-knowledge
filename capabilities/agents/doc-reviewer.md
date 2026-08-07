@@ -3,8 +3,7 @@ id: agents.doc-reviewer
 title: Documentation reviewer
 description: Reads changed markdown and reports where it drifts from the house documentation standard, quoting the line it means. Delegate to it before opening a pull request that touches docs.
 type: agent
-status: active
-provenance: decided
+status: stable
 agent:
   name: doc-reviewer
   tools: [Read, Grep, Glob]

@@ -3,8 +3,7 @@ id: engineering.go-best-practices
 title: Go design keeps ownership and failure explicit
 description: High-value Go practices for interfaces, errors, context, concurrency, and tests that keep behavior understandable as a service grows.
 type: concept
-status: active
-provenance: verified
+status: stable
 domain: engineering
 tags: [go, design, testing, concurrency]
 ---

@@ -3,8 +3,7 @@ id: skills.growth.draft-release-notes
 title: Draft release notes
 description: Turn a set of merged changes into notes a customer can act on, organized by what changed for them rather than by what was merged. Use when preparing a release.
 type: skill
-status: active
-provenance: decided
+status: stable
 skill:
   name: draft-release-notes
   allowed-tools: [Read, Grep, Glob, Bash]

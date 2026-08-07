@@ -3,8 +3,7 @@ id: engineering.commit-messages
 title: Commit messages say why
 description: A commit message explains why the change was made, because the diff already shows what changed. The subject is a sentence, the body is the reasoning, and the rejected alternative belongs there too.
 type: concept
-status: active
-provenance: decided
+status: stable
 ---
 
 # Commit messages say why

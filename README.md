@@ -30,6 +30,29 @@ selections, not prose, and are the stable names consumer repositories choose.
 **Bundle** is the built, content-addressed artifact distributed from a bundle
 source.
 
+## Metadata profile
+
+Knowledge metadata follows [Open Knowledge Format
+v0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md).
+The standard owns source provenance (`sources`), authorship (`generated`),
+independent confirmation (`verified`), lifecycle (`status`), and freshness
+(`stale_after`). Documents without `verified` are valid but explicitly
+unverified; this source does not invent verification actors or timestamps
+during migration.
+
+Quartermaster adds only metadata required for distribution:
+
+- `id` gives packages and generated files a stable identity.
+- `domain` supports optional knowledge filtering.
+- `scope` controls path-scoped rules.
+- `visibility` prevents restricted documents from entering an artifact.
+- `skill` and `agent` describe capabilities a package can install.
+- `supersedes` and `superseded_by` retain machine-readable replacement links.
+
+This source requires explicit `id`, `title`, `description`, `type`, and `status`
+even though OKF itself requires only `type`. Explicit lifecycle is necessary
+because only `stable` documents may become rules.
+
 ## Source layout
 
 ```text

@@ -3,8 +3,7 @@ id: skills.data.query-a-warehouse
 title: Query a warehouse safely
 description: Explore an unfamiliar warehouse without running something that scans a petabyte. Use before writing a query against a table you have not queried before.
 type: skill
-status: active
-provenance: decided
+status: stable
 skill:
   name: query-a-warehouse
   allowed-tools: [Read, Grep, Bash]
