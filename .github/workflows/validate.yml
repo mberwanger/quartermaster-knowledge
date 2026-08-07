@@ -41,7 +41,7 @@ jobs:
         run: qm bundle index --root . --check
 
       # Build last: it catches what validation cannot. An inline link pointing at
-      # a document that does not exist, a ruleset naming a document that does not
+      # a document that does not exist, a package naming a document that does not
       # qualify, and an agent declaring a permission mode a bundle may not carry
       # are all build-time failures.
       - name: Build the bundle
